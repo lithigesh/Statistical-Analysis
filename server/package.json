@@ -5,7 +5,9 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "init-db": "node src/scripts/initDatabase.js",
+    "db:reset": "node src/scripts/initDatabase.js"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +16,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "mongodb": "^6.20.0",
+    "mongoose": "^8.19.0",
     "simple-statistics": "^7.8.3"
   }
 }

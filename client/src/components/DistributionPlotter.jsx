@@ -8,13 +8,17 @@ const DistributionPlotter = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [saveToDb, setSaveToDb] = useState(false);
+  const [savedAnalyses, setSavedAnalyses] = useState([]);
+  const [showSaved, setShowSaved] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
-  const fetchDistributionData = useCallback(async () => {
+  const fetchDistributionData = useCallback(async (shouldSave = saveToDb) => {
     setLoading(true);
     setError(null);
     try {
-      const apiPrefix = import.meta.env.VITE_API_PREFIX || '/api';
-      let url = `${apiPrefix}/${distributionType}-distribution?`;
+      const baseUrl = 'http://localhost:3001/api';
+      let url = `${baseUrl}/${distributionType}-distribution?`;
       
       if (distributionType === 'normal') {
         url += `mean=${params.mean}&stdDev=${params.stdDev}`;
@@ -26,12 +30,23 @@ const DistributionPlotter = () => {
         url += `lambda=${params.lambda}`;
       }
 
+      // Add save parameter if enabled
+      if (shouldSave) {
+        url += url.includes('?') ? '&save=true' : '?save=true';
+      }
+
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const result = await response.json();
       setData(result);
+      
+      // Show save success indicator if saved
+      if (shouldSave) {
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 3000);
+      }
     } catch (e) {
       console.error("Error fetching data:", e);
       setError("Failed to fetch data. Please check server status.");
@@ -39,11 +54,31 @@ const DistributionPlotter = () => {
     } finally {
       setLoading(false);
     }
-  }, [distributionType, params]);
+  }, [distributionType, params, saveToDb]);
+
+  const loadSavedAnalyses = useCallback(async () => {
+    try {
+      const baseUrl = 'http://localhost:3001/api';
+      const response = await fetch(`${baseUrl}/analyses/distributions?limit=20`);
+      if (response.ok) {
+        const result = await response.json();
+        setSavedAnalyses(result.analyses || []);
+      }
+    } catch (error) {
+      console.error('Error loading saved analyses:', error);
+    }
+  }, []);
+
+  // Remove automatic generation - user must click button
+  // useEffect(() => {
+  //   fetchDistributionData();
+  // }, [fetchDistributionData]);
 
   useEffect(() => {
-    fetchDistributionData();
-  }, [fetchDistributionData]);
+    if (showSaved) {
+      loadSavedAnalyses();
+    }
+  }, [showSaved, loadSavedAnalyses]);
 
   const handleParamChange = (paramName, value) => {
     setParams(prev => ({
@@ -192,12 +227,56 @@ const DistributionPlotter = () => {
         </select>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {renderParameterInputs()}
       </div>
 
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-8 p-4 bg-gray-50 rounded-lg border border-gray-100">
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={() => {
+              setSaveToDb(false);
+              fetchDistributionData(false);
+            }}
+            disabled={loading}
+            className="px-6 py-2 bg-white text-black border-2 border-black rounded-md hover:bg-gray-100 disabled:bg-gray-200 disabled:cursor-not-allowed transition-colors font-medium"
+          >
+            {loading ? 'Generating...' : 'Generate Distribution'}
+          </button>
+          
+          <button
+            onClick={() => {
+              setSaveToDb(true);
+              fetchDistributionData(true);
+            }}
+            disabled={loading}
+            className="px-6 py-2 bg-black text-white rounded-md hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
+          >
+            {loading ? 'Saving...' : 'Generate & Save to DB'}
+          </button>
+        </div>
+        
+        <button
+          onClick={() => setShowSaved(!showSaved)}
+          className="px-4 py-2 text-sm font-medium text-black bg-white border border-black rounded-md hover:bg-gray-50 transition-colors"
+        >
+          {showSaved ? 'Hide Saved Analyses' : 'Show Saved Analyses'}
+        </button>
+      </div>
+
+        {saveSuccess && (
+          <div className="mb-4 p-4 bg-black text-white rounded-lg border-2 border-gray-300">
+            <div className="flex items-center">
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="font-medium">Distribution analysis saved to database successfully!</span>
+            </div>
+          </div>
+        )}
+
         {loading && (
-          <div className="flex justify-center items-center h-24 text-indigo-600">
+          <div className="flex justify-center items-center h-24 text-black">
             <svg className="animate-spin h-6 w-6 mr-3" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -217,6 +296,46 @@ const DistributionPlotter = () => {
           <div className="bg-white p-4 rounded border border-gray-200">
             <NormalDistributionChart data={data} />
           </div>
+        </div>
+      )}
+
+      {showSaved && (
+        <div className="mt-8 bg-gray-50 p-6 rounded-lg border border-gray-100">
+          <h4 className="font-medium text-gray-900 mb-4">Saved Distribution Analyses</h4>
+          {savedAnalyses.length === 0 ? (
+            <p className="text-gray-500 text-center py-8">No saved analyses yet. Enable "Save analysis to database" to store your results.</p>
+          ) : (
+            <div className="grid gap-4">
+              {savedAnalyses.map((analysis) => (
+                <div key={analysis._id} className="bg-white p-4 rounded border border-gray-200">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h5 className="font-medium text-gray-900 capitalize">
+                        {analysis.analysisType} Distribution
+                      </h5>
+                      <p className="text-sm text-gray-500">
+                        {new Date(analysis.createdAt).toLocaleString()}
+                      </p>
+                    </div>
+                    <span className="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">
+                      {analysis.dataPoints?.length || 0} points
+                    </span>
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    <p><strong>Parameters:</strong></p>
+                    <ul className="ml-4">
+                      {Array.from(analysis.parameters || new Map()).map(([key, value]) => (
+                        <li key={key}>• {key}: {value}</li>
+                      ))}
+                    </ul>
+                    {analysis.metadata?.description && (
+                      <p className="mt-2"><strong>Description:</strong> {analysis.metadata.description}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
