@@ -13,7 +13,9 @@ const Dashboard = () => {
   const loadDashboardStats = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3001/api/dashboard/stats');
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+      const apiPrefix = import.meta.env.VITE_API_PREFIX || '/api';
+      const response = await fetch(`${apiBaseUrl}${apiPrefix}/dashboard/stats`);
       if (response.ok) {
         const data = await response.json();
         setStats(data);
