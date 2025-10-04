@@ -18,6 +18,11 @@ connectDB();
 // Middleware
 app.use(express.json());
 
+// Handle preflight OPTIONS requests
+app.options('*', (req, res) => {
+  res.status(200).end();
+});
+
 // Routes
 app.use('/api', distributionRoutes);
 app.use('/api', hypothesisRoutes);
@@ -39,6 +44,12 @@ app.get('/', (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
+// For local development
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
+  });
+}
+
+// Export for Vercel serverless functions
+module.exports = app;
