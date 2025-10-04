@@ -16,7 +16,9 @@ const HypothesisTest = () => {
   const handleTest = async (shouldSave = saveToDb) => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3001/api/hypothesis-test', {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+      const apiPrefix = import.meta.env.VITE_API_PREFIX || '/api';
+      const response = await fetch(`${apiBaseUrl}${apiPrefix}/hypothesis-test`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -47,7 +49,9 @@ const HypothesisTest = () => {
 
   const loadSavedTests = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/analyses/hypothesis-tests?limit=20');
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+      const apiPrefix = import.meta.env.VITE_API_PREFIX || '/api';
+      const response = await fetch(`${apiBaseUrl}${apiPrefix}/analyses/hypothesis-tests?limit=20`);
       if (response.ok) {
         const result = await response.json();
         setSavedTests(result.tests || []);

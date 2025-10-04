@@ -17,7 +17,9 @@ const DistributionPlotter = () => {
     setLoading(true);
     setError(null);
     try {
-      const baseUrl = 'http://localhost:3001/api';
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+      const apiPrefix = import.meta.env.VITE_API_PREFIX || '/api';
+      const baseUrl = `${apiBaseUrl}${apiPrefix}`;
       let url = `${baseUrl}/${distributionType}-distribution?`;
       
       if (distributionType === 'normal') {
@@ -58,7 +60,9 @@ const DistributionPlotter = () => {
 
   const loadSavedAnalyses = useCallback(async () => {
     try {
-      const baseUrl = 'http://localhost:3001/api';
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+      const apiPrefix = import.meta.env.VITE_API_PREFIX || '/api';
+      const baseUrl = `${apiBaseUrl}${apiPrefix}`;
       const response = await fetch(`${baseUrl}/analyses/distributions?limit=20`);
       if (response.ok) {
         const result = await response.json();

@@ -34,7 +34,9 @@ const RegressionAnalysis = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:3001/api/regression', {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+      const apiPrefix = import.meta.env.VITE_API_PREFIX || '/api';
+      const response = await fetch(`${apiBaseUrl}${apiPrefix}/regression`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,7 +65,9 @@ const RegressionAnalysis = () => {
 
   const loadSavedRegressions = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/analyses/regressions?limit=20');
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+      const apiPrefix = import.meta.env.VITE_API_PREFIX || '/api';
+      const response = await fetch(`${apiBaseUrl}${apiPrefix}/analyses/regressions?limit=20`);
       if (response.ok) {
         const result = await response.json();
         setSavedRegressions(result.regressions || []);
