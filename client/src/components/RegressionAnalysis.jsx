@@ -149,32 +149,32 @@ const RegressionAnalysis = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-sm border border-gray-200">
-      <div className="mb-8">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+    <div className="max-w-6xl mx-auto bg-white p-4 sm:p-6 lg:p-8 rounded-lg shadow-sm border border-gray-200">
+      <div className="mb-6 sm:mb-8">
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">
           Linear Regression Analysis
         </h2>
-        <p className="text-gray-600">
+        <p className="text-sm sm:text-base text-gray-600">
           Analyze the linear relationship between two variables and generate predictive models with statistical metrics.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
             X Data (comma-separated)
           </label>
           <textarea
             value={xData}
             onChange={(e) => setXData(e.target.value)}
             placeholder="e.g., 1, 2, 3, 4, 5"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
             rows={3}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
             Y Data (comma-separated)
           </label>
           <textarea
@@ -210,16 +210,16 @@ const RegressionAnalysis = () => {
         </div>
       )}
 
-      <div className="flex space-x-4 mb-8">
+      <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mb-6 sm:mb-8">
         <button
           onClick={() => {
             setSaveToDb(false);
             handleRegression(false);
           }}
           disabled={loading || !xData || !yData}
-          className="flex-1 bg-white text-black border-2 border-black py-3 px-6 rounded-md hover:bg-gray-100 disabled:bg-gray-200 disabled:cursor-not-allowed transition-colors font-medium"
+          className="flex-1 bg-white text-black border-2 border-black py-2 sm:py-3 px-4 sm:px-6 rounded-md hover:bg-gray-100 disabled:bg-gray-200 disabled:cursor-not-allowed transition-colors font-medium text-sm sm:text-base"
         >
-          {loading ? 'Computing Regression Model...' : 'Run Regression Analysis'}
+          {loading ? 'Computing...' : 'Run Regression Analysis'}
         </button>
         
         <button
@@ -228,9 +228,9 @@ const RegressionAnalysis = () => {
             handleRegression(true);
           }}
           disabled={loading || !xData || !yData}
-          className="flex-1 bg-black text-white py-3 px-6 rounded-md hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
+          className="flex-1 bg-black text-white py-2 sm:py-3 px-4 sm:px-6 rounded-md hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium text-sm sm:text-base"
         >
-          {loading ? 'Saving Analysis...' : 'Run & Save to DB'}
+          {loading ? 'Saving...' : 'Run & Save to DB'}
         </button>
       </div>
 

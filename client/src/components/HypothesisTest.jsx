@@ -62,25 +62,25 @@ const HypothesisTest = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-sm border border-gray-200">
-      <div className="mb-8">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+    <div className="max-w-4xl mx-auto bg-white p-4 sm:p-6 lg:p-8 rounded-lg shadow-sm border border-gray-200">
+      <div className="mb-6 sm:mb-8">
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">
           Hypothesis Testing
         </h2>
-        <p className="text-gray-600">
+        <p className="text-sm sm:text-base text-gray-600">
           Perform statistical hypothesis tests to determine if sample data provides sufficient evidence to reject a null hypothesis.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
         <div>
-          <label className="block text-sm font-semibold text-gray-800 mb-2">
+          <label className="block text-xs sm:text-sm font-semibold text-gray-800 mb-2">
             Statistical Test
           </label>
           <select
             value={testType}
             onChange={(e) => setTestType(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white shadow-sm"
+            className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white shadow-sm"
           >
             <option value="t-test">One-Sample t-test</option>
             <option value="z-test">One-Sample z-test</option>
@@ -88,13 +88,13 @@ const HypothesisTest = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-800 mb-2">
+          <label className="block text-xs sm:text-sm font-semibold text-gray-800 mb-2">
             Significance Level (α)
           </label>
           <select
             value={significanceLevel}
             onChange={(e) => setSignificanceLevel(parseFloat(e.target.value))}
-            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white shadow-sm"
+            className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white shadow-sm"
           >
             <option value={0.01}>0.01 (99% confidence)</option>
             <option value={0.05}>0.05 (95% confidence)</option>
@@ -131,13 +131,13 @@ const HypothesisTest = () => {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6 p-4 bg-gray-50 rounded-lg border border-gray-100">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-100">
         <button
           onClick={() => {
             setShowSaved(!showSaved);
             if (!showSaved) loadSavedTests();
           }}
-          className="px-4 py-2 text-sm font-medium text-black bg-white border border-black rounded-md hover:bg-gray-50 transition-colors"
+          className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-black bg-white border border-black rounded-md hover:bg-gray-50 transition-colors"
         >
           {showSaved ? 'Hide Saved Tests' : 'Show Saved Tests'}
         </button>
@@ -154,16 +154,16 @@ const HypothesisTest = () => {
         </div>
       )}
 
-      <div className="flex space-x-4 mb-6">
+      <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mb-4 sm:mb-6">
         <button
           onClick={() => {
             setSaveToDb(false);
             handleTest(false);
           }}
           disabled={loading || !sampleData || !populationMean}
-          className="flex-1 bg-white text-black border-2 border-black py-3 px-6 rounded-md hover:bg-gray-100 disabled:bg-gray-200 disabled:cursor-not-allowed transition-colors font-medium"
+          className="flex-1 bg-white text-black border-2 border-black py-2 sm:py-3 px-4 sm:px-6 rounded-md hover:bg-gray-100 disabled:bg-gray-200 disabled:cursor-not-allowed transition-colors font-medium text-sm sm:text-base"
         >
-          {loading ? 'Computing Test Statistics...' : 'Run Hypothesis Test'}
+          {loading ? 'Computing...' : 'Run Hypothesis Test'}
         </button>
         
         <button
@@ -172,9 +172,9 @@ const HypothesisTest = () => {
             handleTest(true);
           }}
           disabled={loading || !sampleData || !populationMean}
-          className="flex-1 bg-black text-white py-3 px-6 rounded-md hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
+          className="flex-1 bg-black text-white py-2 sm:py-3 px-4 sm:px-6 rounded-md hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium text-sm sm:text-base"
         >
-          {loading ? 'Saving Test...' : 'Run & Save to DB'}
+          {loading ? 'Saving...' : 'Run & Save to DB'}
         </button>
       </div>
 

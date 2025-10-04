@@ -13,7 +13,7 @@ function App() {
       <div className="min-h-screen bg-white font-sans antialiased">
         <Navigation />
         
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-2 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/distributions" element={<DistributionPlotter />} />
