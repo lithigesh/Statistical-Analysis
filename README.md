@@ -16,7 +16,7 @@
 
 ## About the use case: --3 Mark
 
-This Statistical Analysis and Probability Tools application is a comprehensive web-based platform designed for performing advanced mathematical computations in statistics and probability theory. The application provides interactive tools for data analysis, statistical hypothesis testing, and regression modeling.
+This Statistical Analysis and Probability Tools application is a comprehensive web-based platform designed for performing advanced mathematical computations in statistics and probability theory. The application provides interactive tools for data analysis, statistical hypothesis testing and regression modeling.
 
 **Key Features:**
 - **Interactive Dashboard:** Real-time analytics showing usage statistics and saved analyses
